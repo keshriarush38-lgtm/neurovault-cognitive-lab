@@ -1,0 +1,478 @@
+DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>NEUROVAULT | Cognitive Lab</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:Arial,sans-serif;
+  background:#050712;
+  color:#eaf2ff;
+  min-height:100vh;
+}
+
+header{
+  padding:22px 7%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid #20283d;
+  background:#080b18;
+}
+
+.logo{
+  font-size:22px;
+  font-weight:bold;
+  letter-spacing:2px;
+}
+
+.logo span{color:#6ee7ff}
+
+.status{
+  font-size:13px;
+  color:#6ee7ff;
+}
+
+.container{
+  width:86%;
+  max-width:1200px;
+  margin:auto;
+  padding:50px 0;
+}
+
+.hero{
+  text-align:center;
+  padding:30px 0 50px;
+}
+
+.hero h1{
+  font-size:clamp(42px,8vw,82px);
+  letter-spacing:8px;
+  background:linear-gradient(90deg,#6ee7ff,#a78bfa,#6ee7ff);
+  background-size:200%;
+  color:transparent;
+  background-clip:text;
+  animation:gradient 5s infinite;
+}
+
+@keyframes gradient{
+  50%{background-position:100%}
+}
+
+.hero p{
+  color:#8995ad;
+  margin-top:15px;
+}
+
+.dashboard{
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:20px;
+}
+
+.panel{
+  background:#0b1020;
+  border:1px solid #202a42;
+  border-radius:18px;
+  padding:25px;
+  box-shadow:0 15px 40px rgba(0,0,0,.3);
+}
+
+.panel h2{
+  font-size:18px;
+  margin-bottom:20px;
+}
+
+.brain{
+  height:330px;
+  position:relative;
+  overflow:hidden;
+  border-radius:14px;
+  background:
+    radial-gradient(circle at center,#172d55 0,#091022 35%,#050712 70%);
+}
+
+.node{
+  position:absolute;
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  background:#6ee7ff;
+  box-shadow:0 0 18px #6ee7ff;
+  animation:pulse 1.8s infinite alternate;
+}
+
+@keyframes pulse{
+  from{transform:scale(.7);opacity:.5}
+  to{transform:scale(1.4);opacity:1}
+}
+
+.line{
+  position:absolute;
+  height:2px;
+  background:linear-gradient(90deg,transparent,#6ee7ff,transparent);
+  transform-origin:left;
+  opacity:.45;
+}
+
+.metrics{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-top:18px;
+}
+
+.metric{
+  background:#10172a;
+  border-radius:12px;
+  padding:18px;
+  text-align:center;
+}
+
+.metric b{
+  display:block;
+  font-size:26px;
+  color:#6ee7ff;
+  margin-bottom:6px;
+}
+
+.metric small{color:#7e8aa2}
+
+button{
+  width:100%;
+  padding:14px;
+  border:0;
+  border-radius:10px;
+  background:linear-gradient(90deg,#6ee7ff,#8b7cff);
+  color:#050712;
+  font-weight:bold;
+  cursor:pointer;
+  margin-top:10px;
+}
+
+button:hover{
+  filter:brightness(1.15);
+}
+
+#reactionBox{
+  height:170px;
+  margin-top:15px;
+  border-radius:14px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  background:#151b2d;
+  color:#8e9ab2;
+  cursor:pointer;
+  user-select:none;
+}
+
+#result{
+  text-align:center;
+  margin-top:12px;
+  color:#6ee7ff;
+  min-height:20px;
+}
+
+.analysis{
+  margin-top:20px;
+}
+
+.bar{
+  height:10px;
+  background:#1b2439;
+  border-radius:20px;
+  margin:8px 0 16px;
+  overflow:hidden;
+}
+
+.fill{
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,#6ee7ff,#a78bfa);
+  transition:1s;
+}
+
+.console{
+  margin-top:20px;
+  background:#050811;
+  border:1px solid #1d263c;
+  border-radius:12px;
+  padding:15px;
+  height:130px;
+  overflow:auto;
+  font-family:monospace;
+  color:#72f6b2;
+  font-size:13px;
+}
+
+footer{
+  text-align:center;
+  padding:30px;
+  color:#5e6980;
+}
+
+@media(max-width:800px){
+  .dashboard{grid-template-columns:1fr}
+  .metrics{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">NEURO<span>VAULT</span></div>
+  <div class="status">● SYSTEM ONLINE</div>
+</header>
+
+<div class="container">
+
+<section class="hero">
+  <h1>NEUROVAULT</h1>
+  <p>Interactive Cognitive Research Laboratory</p>
+</section>
+
+<div class="dashboard">
+
+<!-- Neural network -->
+<div class="panel">
+  <h2>🧠 Neural Activity Simulation</h2>
+
+  <div class="brain" id="brain"></div>
+
+  <div class="metrics">
+    <div class="metric">
+      <b id="activity">87%</b>
+      <small>Neural Activity</small>
+    </div>
+
+    <div class="metric">
+      <b id="connections">1,284</b>
+      <small>Connections</small>
+    </div>
+
+    <div class="metric">
+      <b id="focus">92%</b>
+      <small>Focus Index</small>
+    </div>
+  </div>
+
+  <div class="console" id="console">
+    > Initializing neural environment...<br>
+    > Loading cognitive modules...<br>
+    > Neural simulation ready.
+  </div>
+</div>
+
+<!-- Reaction test -->
+<div class="panel">
+
+  <h2>⚡ Reaction Test</h2>
+
+  <p style="color:#7e8aa2;font-size:14px">
+    Wait for the signal, then tap the box as quickly as possible.
+  </p>
+
+  <button onclick="startTest()">START TEST</button>
+
+  <div id="reactionBox">
+    Press START to begin
+  </div>
+
+  <div id="result"></div>
+
+  <div class="analysis">
+    <p>Reaction Performance</p>
+    <div class="bar">
+      <div class="fill" id="performance"></div>
+    </div>
+
+    <p>Attention Stability</p>
+    <div class="bar">
+      <div class="fill" id="attention"></div>
+    </div>
+  </div>
+
+</div>
+
+</div>
+</div>
+
+<footer>
+  NEUROVAULT • University Research Demonstration • 2026
+</footer>
+
+<script>
+
+/* ---------- NEURAL NETWORK ---------- */
+
+const brain=document.getElementById("brain");
+const nodes=[];
+
+for(let i=0;i<25;i++){
+
+  const n=document.createElement("div");
+  n.className="node";
+
+  n.style.left=(10+Math.random()*80)+"%";
+  n.style.top=(10+Math.random()*80)+"%";
+
+  n.style.animationDelay=Math.random()*2+"s";
+
+  brain.appendChild(n);
+  nodes.push(n);
+}
+
+/* Create network connections */
+
+for(let i=0;i<18;i++){
+
+  const a=nodes[Math.floor(Math.random()*nodes.length)];
+  const b=nodes[Math.floor(Math.random()*nodes.length)];
+
+  const x1=a.offsetLeft+6;
+  const y1=a.offsetTop+6;
+
+  const x2=b.offsetLeft+6;
+  const y2=b.offsetTop+6;
+
+  const dx=x2-x1;
+  const dy=y2-y1;
+
+  const distance=Math.sqrt(dx*dx+dy*dy);
+  const angle=Math.atan2(dy,dx);
+
+  const line=document.createElement("div");
+
+  line.className="line";
+  line.style.left=x1+"px";
+  line.style.top=y1+"px";
+  line.style.width=distance+"px";
+  line.style.transform="rotate("+angle+"rad)";
+
+  brain.appendChild(line);
+}
+
+/* ---------- LIVE METRICS ---------- */
+
+setInterval(()=>{
+
+  document.getElementById("activity").textContent=
+    (80+Math.floor(Math.random()*18))+"%";
+
+  document.getElementById("focus").textContent=
+    (85+Math.floor(Math.random()*14))+"%";
+
+  document.getElementById("connections").textContent=
+    (1200+Math.floor(Math.random()*200)).toLocaleString();
+
+},1500);
+
+
+/* ---------- CONSOLE ---------- */
+
+setInterval(()=>{
+
+  const messages=[
+    "Scanning neural pathways...",
+    "Signal synchronization complete.",
+    "Cognitive pattern detected.",
+    "Updating neural model...",
+    "Analyzing response latency..."
+  ];
+
+  const msg=messages[Math.floor(Math.random()*messages.length)];
+
+  const consoleBox=document.getElementById("console");
+
+  consoleBox.innerHTML+=
+    "<br>> "+msg;
+
+  consoleBox.scrollTop=consoleBox.scrollHeight;
+
+},2500);
+
+
+/* ---------- REACTION TEST ---------- */
+
+let startTime;
+let timer;
+let waiting=false;
+
+function startTest(){
+
+  const box=document.getElementById("reactionBox");
+  const result=document.getElementById("result");
+
+  clearTimeout(timer);
+
+  waiting=true;
+
+  box.textContent="WAIT...";
+  box.style.background="#7f1d1d";
+
+  result.textContent="";
+
+  const delay=1500+Math.random()*3500;
+
+  timer=setTimeout(()=>{
+
+    startTime=Date.now();
+
+    box.textContent="⚡ TAP NOW!";
+    box.style.background="#064e3b";
+
+  },delay);
+}
+
+
+document.getElementById("reactionBox").onclick=function(){
+
+  const box=this;
+
+  if(!waiting)return;
+
+  if(!startTime){
+
+    clearTimeout(timer);
+
+    box.textContent="Too early!";
+    box.style.background="#78350f";
+
+    waiting=false;
+    return;
+  }
+
+  const reaction=Date.now()-startTime;
+
+  waiting=false;
+
+  box.textContent="Test Complete";
+
+  box.style.background="#151b2d";
+
+  document.getElementById("result").textContent=
+    "Reaction time: "+reaction+" ms";
+
+  let score=Math.max(10,100-(reaction-150)/6);
+
+  score=Math.min(100,Math.round(score));
+
+  document.getElementById("performance").style.width=
+    score+"%";
+
+  document.getElementById("attention").style.width=
+    Math.min(100,score+Math.floor(Math.random()*8))+"%";
+
+};
+
+</script>
+
+</body>
+</html>
